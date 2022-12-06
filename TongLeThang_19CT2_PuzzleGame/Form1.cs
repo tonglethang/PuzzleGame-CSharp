@@ -3,46 +3,30 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TongLeThang_19CT2_PuzzleGame
 {
-    public partial class Form1 : Form
+    public partial class frmThang : Form
     {
         int inNullSliceIndex, inmoves = 0;
         List<Bitmap> lstOriginalPictureList = new List<Bitmap>();
         System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
-        private void comboImg_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            object tmp = comboImg.Text.ToString();
-            if (tmp.Equals("Dải ngân hà"))
-            {
-                gbOriginal.BackgroundImage = Properties.Resources.nganha;
-                lstOriginalPictureList.AddRange(new Bitmap[] { Properties.Resources._1_1, Properties.Resources._1_2, Properties.Resources._1_3, Properties.Resources._1_4, Properties.Resources._1_5, Properties.Resources._1_6, Properties.Resources._1_7, Properties.Resources._1_8, Properties.Resources._1_9, Properties.Resources._null });
-                Shuffle();
-            }
-            else if (tmp.Equals("Bãi biển"))
-            {
-                gbOriginal.BackgroundImage = Properties.Resources.baibien;
-                lstOriginalPictureList.AddRange(new Bitmap[] { Properties.Resources._2_1, Properties.Resources._2_2, Properties.Resources._2_3, Properties.Resources._2_4, Properties.Resources._2_5, Properties.Resources._2_6, Properties.Resources._2_7, Properties.Resources._2_8, Properties.Resources._2_9, Properties.Resources._null });
-                Shuffle();
-            }
-            else if (tmp.Equals("Ghềnh đá dĩa"))
-            {
-                gbOriginal.BackgroundImage = Properties.Resources.dadia;
-            }
-        }
-        public Form1()
+        int count = 300;
+        string[] arr = new string[0];
+        public frmThang()
         {
             InitializeComponent();
             gbOriginal.BackgroundImage = Properties.Resources.nganha;
             lstOriginalPictureList.AddRange(new Bitmap[] { Properties.Resources._1_1, Properties.Resources._1_2, Properties.Resources._1_3, Properties.Resources._1_4, Properties.Resources._1_5, Properties.Resources._1_6, Properties.Resources._1_7, Properties.Resources._1_8, Properties.Resources._1_9, Properties.Resources._null });
 
             lblMovesMade.Text += inmoves;
-            lblTimeElapsed.Text = "00:00:00";
+            lblTime.Text = count.ToString();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -55,7 +39,7 @@ namespace TongLeThang_19CT2_PuzzleGame
             do
             {
                 int j;
-                List<int> Indexes = new List<int>(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 9 });//8 is not present - since it is the last slice.
+                List<int> Indexes = new List<int>(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 9 });
                 Random r = new Random();
                 for (int i = 0; i < 9; i++)
                 {
@@ -69,15 +53,18 @@ namespace TongLeThang_19CT2_PuzzleGame
         private void btnShuffle_Click(object sender, EventArgs e)
         {
             DialogResult YesOrNo = new DialogResult();
-            if (lblTimeElapsed.Text != "00:00:00")
+            if (lblTime.Text != "300")
             {
                 YesOrNo = MessageBox.Show("Bạn có muốn chơi lại ?", "Game xếp hình", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             }
-            if (YesOrNo == DialogResult.Yes || lblTimeElapsed.Text == "00:00:00")
+            if (YesOrNo == DialogResult.Yes || lblTime.Text == count.ToString())
             {
                 Shuffle();
+                count = 300;
+                timer1.Stop();
                 timer.Reset();
-                lblTimeElapsed.Text = "00:00:00";
+                lblTime.Text = count.ToString();
+                txtName.ReadOnly = false;
                 inmoves = 0;
                 lblMovesMade.Text = "Số lần xếp: 0";
             }
@@ -97,31 +84,79 @@ namespace TongLeThang_19CT2_PuzzleGame
 
         private void SwitchPictureBox(object sender, EventArgs e)
         {
-            if (lblTimeElapsed.Text == "00:00:00")
-                timer.Start();
-            int inPictureBoxIndex = gbPuzzleBox.Controls.IndexOf(sender as Control);
-            if (inNullSliceIndex != inPictureBoxIndex)
+            if(txtName.Text.Length == 0)
             {
-                List<int> arr = new List<int>(new int[] { ((inPictureBoxIndex % 3 == 0) ? -1 : inPictureBoxIndex - 1), inPictureBoxIndex - 3, (inPictureBoxIndex % 3 == 2) ? -1 : inPictureBoxIndex + 1, inPictureBoxIndex + 3 });
-                if (arr.Contains(inNullSliceIndex))
+                MessageBox.Show("Vui lòng nhập tên của bạn !", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                arr = new string[0];
+                String content = File.ReadAllText("xephang.txt");
+                string[] lines = content.Split(
+                         new string[] { "\r\n", "\r", "\n" },
+                         StringSplitOptions.None
+                         );
+
+                for (int i = 0; i < lines.Length; i++)
                 {
-                    ((PictureBox)gbPuzzleBox.Controls[inNullSliceIndex]).Image = ((PictureBox)gbPuzzleBox.Controls[inPictureBoxIndex]).Image;
-                    ((PictureBox)gbPuzzleBox.Controls[inPictureBoxIndex]).Image = lstOriginalPictureList[9];
-                    inNullSliceIndex = inPictureBoxIndex;
-                    lblMovesMade.Text = "Số lần xếp : " + (++inmoves);
-                    if (CheckWin())
+                    string[] arrTmp = lines[i].Split(',');
+                    Array.Resize(ref arr, arr.Length + 1);
+                    arr[arr.GetUpperBound(0)] = arrTmp[0];
+                }
+                Boolean key = true;
+                foreach (string line in arr)
+                {
+                    if (txtName.Text.ToString().Equals(line))
                     {
-                        timer.Stop();
-                        (gbPuzzleBox.Controls[8] as PictureBox).Image = lstOriginalPictureList[8];
-                        MessageBox.Show("Chúc mừng bạn...\nĐã xếp hình thành công !\nThời gian hoàn thành: " + timer.Elapsed.ToString().Remove(8) + "\nSố lần xếp: " + inmoves, "Game xếp hình");
-                        inmoves = 0;
-                        lblMovesMade.Text = "Số lần xếp : 0";
-                        lblTimeElapsed.Text = "00:00:00";
-                        timer.Reset();
+                        timer1.Enabled = false;
+                        timer1.Stop();
+                        MessageBox.Show("Tên người chơi đã tồn tại ! " + "\n Vui lòng nhập tên khác !", "Thông báo");
+                        key = false;
                         Shuffle();
+                        break;
                     }
                 }
+
+                if (key == true)
+                {
+                    timer1.Start();
+                    btnPause.Enabled = true;
+                    txtName.Enabled = true;
+
+                    int inPictureBoxIndex = gbPuzzleBox.Controls.IndexOf(sender as Control);
+                    if (inNullSliceIndex != inPictureBoxIndex)
+                    {
+                        List<int> arr = new List<int>(new int[] { ((inPictureBoxIndex % 3 == 0) ? -1 : inPictureBoxIndex - 1), inPictureBoxIndex - 3, (inPictureBoxIndex % 3 == 2) ? -1 : inPictureBoxIndex + 1, inPictureBoxIndex + 3 });
+                        if (arr.Contains(inNullSliceIndex))
+                        {
+                            ((PictureBox)gbPuzzleBox.Controls[inNullSliceIndex]).Image = ((PictureBox)gbPuzzleBox.Controls[inPictureBoxIndex]).Image;
+                            ((PictureBox)gbPuzzleBox.Controls[inPictureBoxIndex]).Image = lstOriginalPictureList[9];
+                            inNullSliceIndex = inPictureBoxIndex;
+                            lblMovesMade.Text = "Số lần xếp : " + (++inmoves);
+                            if (CheckWin())
+                            {
+                                timer1.Stop();
+                                (gbPuzzleBox.Controls[8] as PictureBox).Image = lstOriginalPictureList[8];
+                                String filename = "xephang.txt";
+
+                                int time_ht = 300 - int.Parse(lblTime.Text.ToString());
+                                File.AppendAllText(filename, "\n" + txtName.Text + "," + time_ht);
+                                MessageBox.Show("Chúc mừng " + txtName.Text + "...\nĐã xếp hình thành công !\nThời gian hoàn thành: " + time_ht + "s" + "\nSố lần xếp: " + inmoves, "Game xếp hình"); ;
+                                inmoves = 0;
+                                txtName.ReadOnly = false;
+                                lblMovesMade.Text = "Số lần xếp : 0";
+                                lblTime.Text = "300";
+                                Shuffle();
+                            }
+
+                        }
+                    }
+                }
+
+
+               
             }
+           
         }
 
         bool CheckWin()
@@ -135,39 +170,47 @@ namespace TongLeThang_19CT2_PuzzleGame
             else return false;
         }
 
-        private void UpdateTimeElapsed(object sender, EventArgs e)
+        private void btnBXH_Click(object sender, EventArgs e)
         {
-            if (timer.Elapsed.ToString() != "00:00:00")
-                lblTimeElapsed.Text = timer.Elapsed.ToString().Remove(8);
-            if (timer.Elapsed.ToString() == "00:00:00")
-                btnPause.Enabled = false;
-            else
-                btnPause.Enabled = true;
-            if (timer.Elapsed.Minutes.ToString() == "5")
+            var bxh = new frmBXH();
+            bxh.Show();
+
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+      
+            count--;
+            lblTime.Text = count.ToString();
+            timer1.Enabled = true;
+            timer1.Interval = 1000;
+            if (count <= 0)
             {
-                timer.Reset();
+                timer1.Stop();
                 lblMovesMade.Text = "Số lần xếp : 0";
-                lblTimeElapsed.Text = "00:00:00";
+                lblTime.Text = "300";
                 inmoves = 0;
                 btnPause.Enabled = false;
                 MessageBox.Show("Hết thời gian\nBạn có muốn thử lại", "Game xếp hình");
+                count = 300;
                 Shuffle();
             }
+            /*    timer1.Tick += new EventHandler(SwitchPictureBox);*/
         }
 
-  
+
 
         private void PauseOrResume(object sender, EventArgs e)
         {
             if (btnPause.Text == "Pause")
             {
-                timer.Stop();
+                timer1.Stop();
                 gbPuzzleBox.Visible = false;
                 btnPause.Text = "Resume";
             }
             else
             {
-                timer.Start();
+                timer1.Start();
                 gbPuzzleBox.Visible = true;
                 btnPause.Text = "Pause";
             }

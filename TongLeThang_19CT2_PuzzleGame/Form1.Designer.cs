@@ -1,6 +1,6 @@
 ﻿namespace TongLeThang_19CT2_PuzzleGame
 {
-    partial class Form1
+    partial class frmThang
     {
         /// <summary>
         /// Required designer variable.
@@ -43,12 +43,15 @@
             this.btnShuffle = new System.Windows.Forms.Button();
             this.btnQuit = new System.Windows.Forms.Button();
             this.lblMovesMade = new System.Windows.Forms.Label();
-            this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.tmrTimeElapse = new System.Windows.Forms.Timer(this.components);
             this.btnPause = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboImg = new System.Windows.Forms.ComboBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.txtName = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.btnBXH = new System.Windows.Forms.Button();
+            this.lblTime = new System.Windows.Forms.Label();
             this.gbPuzzleBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbx1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx2)).BeginInit();
@@ -211,7 +214,7 @@
             // 
             this.btnQuit.BackColor = System.Drawing.Color.White;
             this.btnQuit.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnQuit.Location = new System.Drawing.Point(862, 544);
+            this.btnQuit.Location = new System.Drawing.Point(953, 544);
             this.btnQuit.Margin = new System.Windows.Forms.Padding(4);
             this.btnQuit.Name = "btnQuit";
             this.btnQuit.Size = new System.Drawing.Size(101, 52);
@@ -225,34 +228,20 @@
             this.lblMovesMade.AutoSize = true;
             this.lblMovesMade.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMovesMade.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.lblMovesMade.Location = new System.Drawing.Point(61, 534);
+            this.lblMovesMade.Location = new System.Drawing.Point(96, 556);
             this.lblMovesMade.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMovesMade.Name = "lblMovesMade";
             this.lblMovesMade.Size = new System.Drawing.Size(122, 24);
             this.lblMovesMade.TabIndex = 2;
             this.lblMovesMade.Text = "Số lần xếp: ";
             // 
-            // lblTimeElapsed
-            // 
-            this.lblTimeElapsed.AutoSize = true;
-            this.lblTimeElapsed.Font = new System.Drawing.Font("Impact", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTimeElapsed.Location = new System.Drawing.Point(182, 459);
-            this.lblTimeElapsed.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblTimeElapsed.Name = "lblTimeElapsed";
-            this.lblTimeElapsed.Size = new System.Drawing.Size(125, 37);
-            this.lblTimeElapsed.TabIndex = 3;
-            this.lblTimeElapsed.Text = "00:00:00";
-            // 
             // tmrTimeElapse
             // 
-            this.tmrTimeElapse.Enabled = true;
-            this.tmrTimeElapse.Interval = 900;
-            this.tmrTimeElapse.Tick += new System.EventHandler(this.UpdateTimeElapsed);
             // 
             // btnPause
             // 
             this.btnPause.Enabled = false;
-            this.btnPause.Location = new System.Drawing.Point(692, 544);
+            this.btnPause.Location = new System.Drawing.Point(657, 544);
             this.btnPause.Margin = new System.Windows.Forms.Padding(4);
             this.btnPause.Name = "btnPause";
             this.btnPause.Size = new System.Drawing.Size(101, 52);
@@ -269,50 +258,81 @@
             this.label1.Location = new System.Drawing.Point(61, 471);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(113, 24);
+            this.label1.Size = new System.Drawing.Size(0, 24);
             this.label1.TabIndex = 6;
-            this.label1.Text = "Thời gian: ";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.label2.Location = new System.Drawing.Point(53, 405);
+            this.label2.Location = new System.Drawing.Point(111, 489);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(121, 24);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "Chọn hình: ";
+            this.label2.Size = new System.Drawing.Size(107, 24);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Thời gian:";
             // 
-            // comboImg
+            // timer1
             // 
-            this.comboImg.AutoCompleteCustomSource.AddRange(new string[] {
-            "Ghềnh đá dĩa",
-            "Bãi biển"});
-            this.comboImg.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboImg.FormattingEnabled = true;
-            this.comboImg.Items.AddRange(new object[] {
-            "Dải ngân hà",
-            "Ghềnh đá dĩa",
-            "Bãi biển"});
-            this.comboImg.Location = new System.Drawing.Point(189, 402);
-            this.comboImg.Name = "comboImg";
-            this.comboImg.Size = new System.Drawing.Size(149, 31);
-            this.comboImg.TabIndex = 9;
-            this.comboImg.Text = "Dải ngân hà";
-            this.comboImg.SelectedIndexChanged += new System.EventHandler(this.comboImg_SelectedIndexChanged);
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // Form1
+            // txtName
+            // 
+            this.txtName.Font = new System.Drawing.Font("Arial", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtName.Location = new System.Drawing.Point(247, 418);
+            this.txtName.Name = "txtName";
+            this.txtName.Size = new System.Drawing.Size(136, 28);
+            this.txtName.TabIndex = 9;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.label3.Location = new System.Drawing.Point(35, 419);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(183, 24);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "Nhập tên của bạn:";
+            // 
+            // btnBXH
+            // 
+            this.btnBXH.BackColor = System.Drawing.Color.White;
+            this.btnBXH.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnBXH.Location = new System.Drawing.Point(800, 544);
+            this.btnBXH.Margin = new System.Windows.Forms.Padding(4);
+            this.btnBXH.Name = "btnBXH";
+            this.btnBXH.Size = new System.Drawing.Size(101, 52);
+            this.btnBXH.TabIndex = 11;
+            this.btnBXH.Text = "Bảng xếp hạng";
+            this.btnBXH.UseVisualStyleBackColor = false;
+            this.btnBXH.Click += new System.EventHandler(this.btnBXH_Click);
+            // 
+            // lblTime
+            // 
+            this.lblTime.AutoSize = true;
+            this.lblTime.Font = new System.Drawing.Font("Impact", 22.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTime.Location = new System.Drawing.Point(249, 480);
+            this.lblTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblTime.Name = "lblTime";
+            this.lblTime.Size = new System.Drawing.Size(80, 45);
+            this.lblTime.TabIndex = 12;
+            this.lblTime.Text = "300";
+            // 
+            // frmThang
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1067, 609);
-            this.Controls.Add(this.comboImg);
+            this.ClientSize = new System.Drawing.Size(1067, 652);
+            this.Controls.Add(this.lblTime);
+            this.Controls.Add(this.btnBXH);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.txtName);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnPause);
-            this.Controls.Add(this.lblTimeElapsed);
             this.Controls.Add(this.lblMovesMade);
             this.Controls.Add(this.btnQuit);
             this.Controls.Add(this.btnShuffle);
@@ -323,9 +343,9 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Form1";
+            this.Name = "frmThang";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Game Xếp Hình";
+            this.Text = "frmThang";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AskPermissionBeforeQuite);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.gbPuzzleBox.ResumeLayout(false);
@@ -359,12 +379,15 @@
         private System.Windows.Forms.Button btnShuffle;
         private System.Windows.Forms.Button btnQuit;
         private System.Windows.Forms.Label lblMovesMade;
-        private System.Windows.Forms.Label lblTimeElapsed;
         private System.Windows.Forms.Timer tmrTimeElapse;
         private System.Windows.Forms.Button btnPause;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboImg;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.TextBox txtName;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnBXH;
+        private System.Windows.Forms.Label lblTime;
     }
 }
 

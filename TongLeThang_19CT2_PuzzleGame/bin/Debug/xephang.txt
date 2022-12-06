@@ -1,0 +1,5 @@
+das,270
+dz,260
+thang,253
+lethang,38
+thangle,36
